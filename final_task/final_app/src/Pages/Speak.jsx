@@ -104,7 +104,7 @@ const Speakers = () => {
   return (
     <section
       ref={sectionRef}
-      className="min-h-[120vh] flex flex-col justify-center items-center bg-white font-[DM Sans] w-full px-2 sm:px-6 lg:px-12"
+      className="min-h-[100vh] flex flex-col justify-center items-center bg-white font-[DM Sans] w-full px-2 sm:px-6 lg:px-12"
     >
 
       <h1
