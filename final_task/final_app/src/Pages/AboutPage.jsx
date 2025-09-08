@@ -64,7 +64,7 @@ const HurdlesSection = () => {
       </p>
 
       <div
-        className="relative w-full h-[650px] mt-8 sm:mt-12 md:mt-20 flex justify-center items-end overflow-hidden"
+        className="relative w-full h-[650px] mt-2 sm:mt-4 md:mt-20 flex justify-center items-end overflow-hidden"
         style={{
           transformStyle: "preserve-3d",
           transformOrigin: "bottom center",
