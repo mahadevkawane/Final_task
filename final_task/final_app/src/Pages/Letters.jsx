@@ -3,11 +3,11 @@ import { motion } from "framer-motion";
 
 const letterData = {
   A: { bg: "/Images/ABackground.jpg", img: "/Images/Aimage.png" },
-  B: { bg: "/Images/BBackground.jpg", img: "/Images/Bimage.png" },
-  C: { bg: "/Images/CBackground.jpg", img: "/Images/Cimage.png" },
-  D: { bg: "/Images/DBackground.jpg", img: "/Images/Dimage.png" },
-  E: { bg: "/Images/EBackground.jpg", img: "/Images/Eimage.png" },
-  F: { bg: "/Images/FBackground.jpg", img: "/Images/Fimage.png" },
+  B: { bg: "/Images/Bbackground.jpg", img: "/Images/Bimage.png" },
+  C: { bg: "/Images/Cbackground.jpg", img: "/Images/Cimage.png" },
+  D: { bg: "/Images/Dbackground.jpg", img: "/Images/Dimage.png" },
+  E: { bg: "/Images/Ebackground.jpg", img: "/Images/Eimage.png" },
+  F: { bg: "/Images/Fbackground.jpg", img: "/Images/Fimage.png" },
 };
 
 const App = () => {
