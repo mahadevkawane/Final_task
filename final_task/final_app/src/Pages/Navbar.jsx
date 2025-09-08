@@ -4,7 +4,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="absolute top-5 left-12 right-12 ml-4 bg-[#FF875C] rounded-[25px] px-6 py-3 z-50 flex items-center justify-between">
+    <nav className="absolute top-5 left-4 right-4 bg-[#FF875C] rounded-[25px] px-6 py-3 z-50 flex items-center justify-between">
       <ul className="hidden md:flex text-white font-medafor text-[20px] font-normal p-2.5 ml-auto mr-96">
         <li className="hover:underline cursor-pointer flex items-center">
           <a href="#home">Home</a>
