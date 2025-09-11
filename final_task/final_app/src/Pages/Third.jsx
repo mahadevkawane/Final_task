@@ -1,79 +1,136 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
-const SmoothZigZagOutsideText = () => {
+export default function ThirdSection() {
   const containerRef = useRef(null);
-  const [scrollY, setScrollY] = useState(window.scrollY);
-  const [lastScrollY, setLastScrollY] = useState(window.scrollY);
-  const [scrollDirection, setScrollDirection] = useState(null);
-  const [visibleItems, setVisibleItems] = useState([]);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"], // Adjust offset to remove extra space
+  });
+  const pathRef = useRef(null);
+  const [points, setPoints] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const textAtCurveEdges = [
-    { number: "1,034", label: "Initial Data", x: 40, y: 200, side: "right" },
-    { number: "2", label: "Processed Data", x: 30, y: 400, side: "left" },
-    { number: "54", label: "Filtered Output", x: 35, y: 600, side: "right" },
-    { number: "25", label: "Final Shape", x: 30, y: 800, side: "left" },
-    { number: "12", label: "Done!", x: 32, y: 1000, side: "right" },
+  // Make dots move with scroll
+  const dashOffset = useTransform(scrollYProgress, [0, 1], [0, 1000]);
+  
+  const opacities = [
+    useTransform(scrollYProgress, [0.05, 0.15], [0, 1]),
+    useTransform(scrollYProgress, [0.25, 0.35], [0, 1]),
+    useTransform(scrollYProgress, [0.5, 0.6], [0, 1]),
+    useTransform(scrollYProgress, [0.7, 0.8], [0, 1]),
   ];
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const direction = currentScrollY < lastScrollY ? "up" : "down";
-      setScrollDirection(direction);
-      setLastScrollY(currentScrollY);
-      setScrollY(currentScrollY);
-
-      if (direction === "up") {
-        setVisibleItems((prevVisible) => {
-          const newVisible = [...prevVisible];
-          textAtCurveEdges.forEach((item, idx) => {
-
-            if (
-              !newVisible.includes(idx) &&
-              currentScrollY + window.innerHeight > item.y + 100
-            ) {
-              newVisible.push(idx);
-            }
-          });
-          return newVisible;
-        });
-      }
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
     };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  useEffect(() => {
+    if (pathRef.current) {
+      const len = pathRef.current.getTotalLength();
+      setPoints([
+        pathRef.current.getPointAtLength(len * 0.2),
+        pathRef.current.getPointAtLength(len * 0.45),
+        pathRef.current.getPointAtLength(len * 0.7),
+        pathRef.current.getPointAtLength(len * 0.95),
+      ]);
+    }
+  }, []);
 
   return (
-    <div
+    <section
       ref={containerRef}
-      className="relative w-full min-h-[200vh] bg-gradient-to-b from-teal-100 to-purple-200 overflow-hidden"
+      style={{
+        height: isMobile ? "200vh" : "300vh", // Adjusted height for mobile
+        background: "linear-gradient(to bottom, #4e8373, #6d9b8f)",
+        position: "relative",
+        overflowX: "hidden",
+      }}
     >
-      {textAtCurveEdges.map((item, idx) => {
-        const offsetX = item.side === "right" ? 60 : -60;
-        const isVisible = visibleItems.includes(idx);
-
-        return (
-          <div
-            key={idx}
-            className="absolute z-10 text-left max-w-[150px] transition-opacity duration-700 ease-in-out"
-            style={{
-              left: `calc(${item.x}% + ${offsetX}px)`,
-              top: `${item.y}px`,
-              transform: isVisible ? "translateY(0)" : "translateY(30px)",
-              opacity: isVisible ? 1 : 0,
-              pointerEvents: isVisible ? "auto" : "none",
-            }}
-          >
-            <h1 className="text-8xl sm:text-5xl font-light text-gray-900 whitespace-nowrap underline decoration-2 decoration-emerald-400">
-              {item.number}
-            </h1>
-            <p className="text-sm text-gray-600 mt-1">{item.label}</p>
-          </div>
-        );
-      })}
-    </div>
+      <svg
+        viewBox={isMobile ? "0 0 1200 1600" : "0 0 1200 2400"} // Adjusted viewBox for mobile
+        preserveAspectRatio="xMidYMid meet"
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          top: 0,
+          left: 0,
+        }}
+      >
+        {/* Dotted path */}
+        <motion.path
+          ref={pathRef}
+          d="
+            M 100 0
+            C 500 400, 800 500, 550 750
+            C 350 950, 900 1200, 1100 1350
+            C 1250 1550, 950 1750, 700 1900
+            C 500 2050, 400 2150, 600 2400
+          "
+          stroke="black"
+          strokeWidth="6"
+          fill="none"
+          strokeDasharray="10 20"
+          strokeLinecap="round"
+          style={{
+            strokeDashoffset: dashOffset, // makes dots scroll
+          }}
+        />
+        <defs>
+          <radialGradient id="glow" r="50%" cx="50%" cy="50%">
+            <stop offset="0%" stopColor="purple" stopOpacity="1" />
+            <stop offset="100%" stopColor="purple" stopOpacity="0" />
+          </radialGradient>
+          <symbol id="star" viewBox="0 0 24 24">
+            <polygon
+              points="12,2 15,10 23,10 17,15 19,23 12,18 5,23 7,15 1,10 9,10"
+              fill="url(#glow)"
+            />
+          </symbol>
+        </defs>
+        {/* Stars + text fixed */}
+        {points.length > 0 &&
+          points.map((p, i) => (
+            <g key={i} transform={`translate(${p.x}, ${p.y})`}>
+              <motion.use
+                href="#star"
+                width="60"
+                height="60"
+                x="-30"
+                y="-30"
+                style={{ opacity: opacities[i] }}
+                animate={{ opacity: [0.4, 1, 0.4] }}
+                transition={{ duration: 1.2, repeat: Infinity }}
+              />
+              <motion.text
+                style={{ opacity: opacities[i] }}
+                x="50"
+                y="5"
+                fontSize="110"
+                fontFamily="serif"
+                fill="black"
+              >
+                {["1,034", "2", "54", "25"][i]}
+              </motion.text>
+              <motion.text
+                style={{ opacity: opacities[i] }}
+                x="50"
+                y="45"
+                fontSize="20"
+                fontFamily="sans-serif"
+                fill="black"
+              >
+                Sample Data about Sample Things
+              </motion.text>
+            </g>
+          ))}
+      </svg>
+    </section>
   );
-};
-
-export default SmoothZigZagOutsideText;
+}
