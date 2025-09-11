@@ -42,6 +42,15 @@ export default function ThirdSection() {
     }
   }, []);
 
+  // Use a useEffect to apply overflow-x: hidden to the body
+  useEffect(() => {
+    document.body.style.overflowX = "hidden";
+    // Clean up the style when the component unmounts
+    return () => {
+      document.body.style.overflowX = "";
+    };
+  }, []);
+
   return (
     <section
       ref={sectionRef}
@@ -49,7 +58,8 @@ export default function ThirdSection() {
         height: isMobileView ? "200vh" : "300vh",
         background: "linear-gradient(to bottom, #4e8373, #6d9b8f)",
         position: "relative",
-        overflowX: "hidden",
+        // Keeping this as a safety measure, but the body style is the key fix
+        overflowX: "hidden", 
       }}
     >
       <svg
